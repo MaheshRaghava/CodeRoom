@@ -275,6 +275,3 @@ More importantly, CodeRoom is programmable infrastructure:
 ## License
 
 MIT License — feel free to fork, extend, and build on top of this.
-```
-
----
