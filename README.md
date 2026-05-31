@@ -2,6 +2,14 @@
 
 A browser-based collaborative IDE where developers pair-program live. Create a room, share the URL, and everyone sees each other's keystrokes in real time — like Google Docs for code.
 
+## Live Demo
+
+- **Frontend:** https://coderoom-client.onrender.com
+- **Backend API:** https://coderoom-server-dfe2.onrender.com
+- **Health Check:** https://coderoom-server-dfe2.onrender.com/health
+
+---
+
 ## Demo
 
 > Two developers coding together in real-time, seeing each other's cursors and keystrokes instantly
