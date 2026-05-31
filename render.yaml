@@ -12,9 +12,9 @@ services:
       - key: PORT
         value: 3001
       - key: MONGO_URI
-        sync: false        # you paste this manually in Render dashboard
+        sync: false
       - key: CLIENT_URL
-        sync: false        # paste your frontend Render URL
+        sync: false
       - key: ONECOMPILER_API_KEY
         sync: false
       - key: ONECOMPILER_API_URL

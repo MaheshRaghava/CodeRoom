@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
-import react            from '@vitejs/plugin-react';
-import path             from 'path';
+import react from '@vitejs/plugin-react';
+import path from 'path';
 
 export default defineConfig(({ mode }) => ({
   plugins: [react()],
@@ -13,27 +13,26 @@ export default defineConfig(({ mode }) => ({
     port: 5173,
     proxy: {
       '/api': {
-        target:       'http://localhost:3001',
+        target: 'http://localhost:3001',
         changeOrigin: true,
       },
       '/socket.io': {
         target: 'http://localhost:3001',
-        ws:     true,
+        ws: true,
       },
     },
   },
   build: {
-    outDir:        'dist',
-    sourcemap:     mode !== 'production',
-    chunkSizeWarningLimit: 1000, // Monaco is large — suppress warning
+    outDir: 'dist',
+    sourcemap: mode !== 'production',
+    chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
-        // Split Monaco into its own chunk so initial load is faster
         manualChunks: {
-          monaco:    ['@monaco-editor/react', 'monaco-editor'],
-          react:     ['react', 'react-dom'],
-          socket:    ['socket.io-client'],
-          router:    ['react-router-dom'],
+          monaco: ['@monaco-editor/react', 'monaco-editor'],
+          react: ['react', 'react-dom'],
+          socket: ['socket.io-client'],
+          router: ['react-router-dom'],
         },
       },
     },
