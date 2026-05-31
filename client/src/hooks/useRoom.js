@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { EVENTS } from '@shared/constants.js';
 import { useSocket } from './useSocket.js';
 import { getDefaultCode } from '../utils/languages.js';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 export const useRoom = (roomId, username) => {
   const { socket, connected } = useSocket(!!username);
@@ -35,7 +36,7 @@ export const useRoom = (roomId, username) => {
 
     const fetchAndJoin = async () => {
       try {
-        const res  = await fetch(`/api/rooms/${roomId}`);
+        const res = await fetch(`${API_URL}/api/rooms/${roomId}`);
         const data = await res.json();
         if (!res.ok) return;
 

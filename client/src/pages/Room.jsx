@@ -8,6 +8,7 @@ import PresenceBar      from '../components/PresenceBar.jsx';
 import Chat             from '../components/Chat.jsx';
 import Output           from '../components/Output.jsx';
 import { disconnectSocket } from '../hooks/useSocket.js';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 function Room() {
   const { roomId } = useParams();
@@ -125,8 +126,8 @@ function Room() {
     setCheckingName(true);
     setNameError('');
     try {
-      const res  = await fetch(
-        `/api/rooms/${roomId}/check-username?username=${encodeURIComponent(usernameInput.trim())}`
+      const res = await fetch(
+        `${API_URL}/api/rooms/${roomId}/check-username?username=${encodeURIComponent(usernameInput.trim())}`
       );
       const data = await res.json();
 

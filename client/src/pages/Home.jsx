@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 function Home() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ function Home() {
     setTimeout(() => {
       setFace(to);
       setFlipping(false);
-    }, 350); // half of the CSS transition
+    }, 350);
   };
 
   // ── Create room ───────────────────────────────────────────────────────────
@@ -30,7 +31,7 @@ function Home() {
     setError('');
     setLoading(true);
     try {
-      const res  = await fetch('/api/rooms', {
+      const res = await fetch(`${API_URL}/api/rooms`, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({ username: createName.trim() }),
@@ -54,13 +55,13 @@ function Home() {
     setLoading(true);
     try {
       // Check room exists
-      const roomRes  = await fetch(`/api/rooms/${joinRoomId.trim()}`);
+      const roomRes = await fetch(`${API_URL}/api/rooms/${joinRoomId.trim()}`);
       const roomData = await roomRes.json();
       if (!roomRes.ok) { setError(roomData.error || 'Room not found'); return; }
 
       // Check username not taken
-      const nameRes  = await fetch(
-        `/api/rooms/${joinRoomId.trim()}/check-username?username=${encodeURIComponent(joinName.trim())}`
+      const nameRes = await fetch(
+        `${API_URL}/api/rooms/${joinRoomId.trim()}/check-username?username=${encodeURIComponent(joinName.trim())}`
       );
       const nameData = await nameRes.json();
       if (!nameData.available) {
