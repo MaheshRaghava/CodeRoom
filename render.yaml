@@ -1,0 +1,45 @@
+services:
+  # ── Backend (Node + Express + Socket.io) ──────────────────────────────────
+  - type: web
+    name: coderoom-server
+    runtime: node
+    rootDir: server
+    buildCommand: npm install
+    startCommand: node src/index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: MONGO_URI
+        sync: false        # you paste this manually in Render dashboard
+      - key: CLIENT_URL
+        sync: false        # paste your frontend Render URL
+      - key: ONECOMPILER_API_KEY
+        sync: false
+      - key: ONECOMPILER_API_URL
+        value: https://api.onecompiler.com/api/v1/run
+      - key: JDOODLE_CLIENT_ID
+        sync: false
+      - key: JDOODLE_CLIENT_SECRET
+        sync: false
+      - key: JDOODLE_API_URL
+        value: https://api.jdoodle.com/v1/execute
+    healthCheckPath: /health
+
+  # ── Frontend (React + Vite static site) ───────────────────────────────────
+  - type: web
+    name: coderoom-client
+    runtime: static
+    rootDir: client
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false        # Render URL e.g. https://coderoom-server.onrender.com
+      - key: VITE_SOCKET_URL
+        sync: false        # same as VITE_API_URL
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html    # React Router — all paths go to index.html
