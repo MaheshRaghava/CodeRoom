@@ -1,12 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
-import { EVENTS }            from '@shared/constants.js';
+import { EVENTS }             from '@shared/constants.js';
 import { getOneCompilerLang } from '../utils/languages.js';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 export const useExecution = (socket, roomId, code, language) => {
   const [result,  setResult]  = useState(null);
   const [running, setRunning] = useState(false);
 
-  // Listen for results from server (broadcast to whole room)
   useEffect(() => {
     if (!socket) return;
 
@@ -31,14 +32,14 @@ export const useExecution = (socket, roomId, code, language) => {
     setResult(null);
 
     try {
-      const res = await fetch('/api/execute', {
+      const res = await fetch(`${API_URL}/api/execute`, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           roomId,
           code,
-          language,                              // our internal id
-          onecompilerLang: getOneCompilerLang(language), // mapped for OneCompiler
+          language,
+          onecompilerLang: getOneCompilerLang(language),
         }),
       });
 
@@ -55,14 +56,12 @@ export const useExecution = (socket, roomId, code, language) => {
           memory:   null,
         });
       }
-      // If ok — result arrives via socket from server
-
     } catch (err) {
       setRunning(false);
       setResult({
         status:   'Error',
         statusId: -1,
-        stderr:   'Could not reach the server. Is it running?',
+        stderr:   `Could not reach server at ${API_URL}. Check your connection.`,
         stdout:   '',
         time:     null,
         memory:   null,

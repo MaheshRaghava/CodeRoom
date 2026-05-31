@@ -7,18 +7,30 @@ import { registerChat }       from './handlers/chat.js';
 
 dotenv.config();
 
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  process.env.CLIENT_URL,
+].filter(Boolean);
+
 let io;
 
 export const initSocket = (httpServer) => {
   io = new Server(httpServer, {
     cors: {
-      origin:  process.env.CLIENT_URL,
-      methods: ['GET', 'POST'],
+      origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin)) return callback(null, true);
+        if (process.env.NODE_ENV !== 'production' && origin.includes('localhost')) {
+          return callback(null, true);
+        }
+        return callback(new Error(`Socket CORS blocked: ${origin}`));
+      },
+      methods:     ['GET', 'POST'],
+      credentials: true,
     },
-    // Keep connections alive
-    pingTimeout:  60000,
-    pingInterval: 25000,
-    // Allow larger payloads (Monaco can send large code)
+    pingTimeout:       60000,
+    pingInterval:      25000,
     maxHttpBufferSize: 1e6,
   });
 
@@ -30,18 +42,13 @@ export const initSocket = (httpServer) => {
     registerCursorSync(io, socket);
     registerChat(io, socket);
 
-    // Respond to client heartbeat
     socket.on('heartbeat', () => {
       socket.emit('heartbeat_ack');
     });
 
-    // Keep-alive ping from server side
     const heartbeat = setInterval(() => {
-      if (socket.connected) {
-        socket.emit('server_ping');
-      } else {
-        clearInterval(heartbeat);
-      }
+      if (socket.connected) socket.emit('server_ping');
+      else clearInterval(heartbeat);
     }, 20000);
 
     socket.on('disconnect', (reason) => {
